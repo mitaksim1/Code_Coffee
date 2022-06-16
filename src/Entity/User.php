@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -45,6 +47,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     private $lastActive;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserTechnology::class, orphanRemoval: true)]
+    private $userTechnologies;
+
+    public function __construct()
+    {
+        $this->userTechnologies = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -215,6 +225,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastActive(?\DateTimeInterface $lastActive): self
     {
         $this->lastActive = $lastActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserTechnology>
+     */
+    public function getUserTechnologies(): Collection
+    {
+        return $this->userTechnologies;
+    }
+
+    public function addUserTechnology(UserTechnology $userTechnology): self
+    {
+        if (!$this->userTechnologies->contains($userTechnology)) {
+            $this->userTechnologies[] = $userTechnology;
+            $userTechnology->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserTechnology(UserTechnology $userTechnology): self
+    {
+        if ($this->userTechnologies->removeElement($userTechnology)) {
+            // set the owning side to null (unless already changed)
+            if ($userTechnology->getUser() === $this) {
+                $userTechnology->setUser(null);
+            }
+        }
 
         return $this;
     }

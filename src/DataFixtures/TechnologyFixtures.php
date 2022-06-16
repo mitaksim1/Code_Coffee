@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Technology;
 use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -9,7 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 
-class UserFixtures extends Fixture implements OrderedFixtureInterface 
+class TechnologyFixtures extends Fixture implements OrderedFixtureInterface 
 {     
     private $encoder;  
 
@@ -21,26 +22,20 @@ class UserFixtures extends Fixture implements OrderedFixtureInterface
         {
             $date = new DateTimeImmutable();
             
-            $user = new User();
-            $user->setFirstname('Miriam');
-            $user->setLastname('Simonnet');
-            $user->setEmail('miriam@miriam.com');
-            $user->setRoles(['ROLE_USER']);
-            $user->setPassword($this->encoder->encodePassword($user, 'miriam'));
-            $user->setLastname('Simonnet');
-            $user->setLocalisation('Limoges');
-            $user->setCreatedAt($date);
-            $user->setUpdatedAt($date);
-            $user->setIsActive(true);
+            $technology = new Technology();
+            $technology->setName('PHP');
+            $technology->setCreatedAt($date);
+            $technology->setUpdatedAt($date);
+            $technology->setIsActive(true);
 
-            $this->addReference('miriam', $user);
+            $this->addReference('PHP', $technology);
             
-            $manager->persist($user);
+            $manager->persist($technology);
             
             $manager->flush();
         }
 
         public function getOrder(){
-            return 1;
+            return 2;
         }
     }
